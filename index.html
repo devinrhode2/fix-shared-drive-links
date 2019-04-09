@@ -1,1 +1,54 @@
-test
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Fix shared drive links</title>
+    <meta />
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.4.3/babel.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class Main extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            domain: localStorage.getItem('domain') || 'your-domain.com/shared-drive-name',
+            file_path: 'foo\bar bar\baz\Cool.docx'
+          };
+
+          this.updateLink = this.updateLink.bind(this);
+        }
+        updateLink() {
+          let link = this.state.domain;
+          if (this.state.domain.includes('://')) {
+            alert('your domain has an issue, remove "://" and everything before it.');
+          }
+          link = 'smb://' + this.state.domain;
+          if (!link.endsWith('/')) {
+            link += '/';
+          }
+
+          let file_path = this.state.file_path.replace(/ /g, '%20').replace(/\\/g, '/');
+          if (file_path.startsWith('/')) {
+            file_path = substring(1, file_path.length);
+          }
+
+          this.setState({link: link + file_path});
+          
+          localStorage.setItem('domain', this.state.domain);
+        }
+        render() {
+          <div>Your domain: <input type="text" id="domain-input" onChange={this.updateLink} value={this.state.domain} /></div>
+          <div>Your file path: <input type="text" id="file-path" onChange={this.updateLink} value={this.state.file_path} /></div>
+          <div>Your fixed url: <input type="text" value={this.state.link} /></div>
+        }
+      };
+      ReactDOM.render(
+        <Main />,
+        document.getElementById('root')
+      );
+    </script>
+  </body>
+</html
