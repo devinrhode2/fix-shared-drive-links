@@ -48,16 +48,15 @@
           link = 'smb://' + this.state.domain;
           var needsJoiningSlash = true;
           if (link.endsWith('/')) {
-            needsJoiningSlash = false;
-            console.warn('you may want folder after domain')
+            link += '/';
           }
 
           let file_path = this.state.file_path.replace(/ /g, '%20').replace(/\\/g, '/');
-          if (file_path.startsWith('/')) {
-            file_path = substring(1, file_path.length);
-          }
           if (file_path.startsWith('S:\\')) {
             file_path.replace('S:\\', '/');
+          }
+          if (file_path.startsWith('/')) {
+            file_path = substring(1, file_path.length);
           }
 
           this.setState({link: link + file_path});
