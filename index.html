@@ -61,6 +61,9 @@
           
           localStorage.setItem('domain', this.state.domain);
         }
+        componentDidMount() {
+          this.updateLink();
+        }
         render() {
           return <div>
             <div>Your domain: <input type="text" id="domain-input" name="domain" onChange={this.updateInput} defaultValue={this.state.domain} /></div>
