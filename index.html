@@ -8,7 +8,14 @@
     <script src="https://unpkg.com/@babel/standalone@7.4.3/babel.js"></script>
     <style>
       input {
-        width: 250px;
+        width: 100%;
+      }
+      div > input {
+        margin-bottom: 16px;
+      }
+      * {
+        font-size: 24px;
+        font-family: sans-serif;
       }
     </style>
   </head>
@@ -19,7 +26,7 @@
         constructor(props) {
           super(props);
           this.state = {
-            domain: localStorage.getItem('domain') || 'your-domain.com/shared-drive-name',
+            domain: localStorage.getItem('domain') || 'your.domain.com/folder',
             file_path: 'foo\\bar bar\\baz\\Cool.docx'
           };
 
@@ -58,7 +65,7 @@
           return <div>
             <div>Your domain: <input type="text" id="domain-input" name="domain" onChange={this.updateInput} defaultValue={this.state.domain} /></div>
             <div>Your file path: <input type="text" id="file-path" name="file_path" onChange={this.updateInput} defaultValue={this.state.file_path} /></div>
-            <div>Your fixed url: <input type="text" value={this.state.link} /></div>
+            <div>Your shareable url: <input type="text" value={this.state.link} /></div>
           </div>
         }
       };
