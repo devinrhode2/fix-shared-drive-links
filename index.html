@@ -47,7 +47,7 @@
           }
           link = 'smb://' + this.state.domain;
           var needsJoiningSlash = true;
-          if (link.endsWith('/')) {
+          if (!link.endsWith('/')) {
             link += '/';
           }
 
