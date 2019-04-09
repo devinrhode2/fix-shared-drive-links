@@ -40,7 +40,7 @@
           localStorage.setItem('domain', this.state.domain);
         }
         render() {
-          <div>
+          return <div>
             <div>Your domain: <input type="text" id="domain-input" onChange={this.updateLink} value={this.state.domain} /></div>
             <div>Your file path: <input type="text" id="file-path" onChange={this.updateLink} value={this.state.file_path} /></div>
             <div>Your fixed url: <input type="text" value={this.state.link} /></div>
