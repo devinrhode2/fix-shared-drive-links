@@ -15,18 +15,18 @@
           super(props);
           this.state = {
             domain: localStorage.getItem('domain') || 'your-domain.com/shared-drive-name',
-            file_path: 'foo\bar bar\baz\Cool.docx'
+            file_path: 'foo\\bar bar\\baz\\Cool.docx'
           };
 
           this.updateLink = this.updateLink.bind(this);
           this.updateDomain = this.updateDomain.bind(this);
+          this.updateFilePath = this.updateFilePath.bind(this);
         }
-        updateDomain(e) {
-          this.setState({domain: e.target.value});
-          this.updateLink();
-        }
-        updateFilePath(e) {
-          this.setState({file_path: e.target.value});
+        updateInput(e) {
+          var newState = this.state;
+          newState[e.target.name] = e.target.value;
+          this.setState(newState);
+
           this.updateLink();
         }
         updateLink() {
@@ -50,8 +50,8 @@
         }
         render() {
           return <div>
-            <div>Your domain: <input type="text" id="domain-input" onChange={this.updateDomain} value={this.state.domain} /></div>
-            <div>Your file path: <input type="text" id="file-path" onChange={this.updateFilePath} value={this.state.file_path} /></div>
+            <div>Your domain: <input type="text" id="domain-input" name="domain" onChange={this.updateInput} defaultValue={this.state.domain} /></div>
+            <div>Your file path: <input type="text" id="file-path" name="file_path" onChange={this.updateInput} defaultValue={this.state.file_path} /></div>
             <div>Your fixed url: <input type="text" value={this.state.link} /></div>
           </div>
         }
