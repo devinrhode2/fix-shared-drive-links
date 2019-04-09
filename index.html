@@ -56,8 +56,8 @@
           if (file_path.startsWith('/')) {
             file_path = substring(1, file_path.length);
           }
-          if (file_path.startsWith('S:\')) {
-            file_path.replace('S:\', '/');
+          if (file_path.startsWith('S:\\')) {
+            file_path.replace('S:\\', '/');
           }
 
           this.setState({link: link + file_path});
