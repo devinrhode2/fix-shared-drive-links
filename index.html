@@ -19,6 +19,15 @@
           };
 
           this.updateLink = this.updateLink.bind(this);
+          this.updateDomain = this.updateDomain.bind(this);
+        }
+        updateDomain(e) {
+          this.setState({domain: e.target.value});
+          this.updateLink();
+        }
+        updateFilePath(e) {
+          this.setState({file_path: e.target.value});
+          this.updateLink();
         }
         updateLink() {
           let link = this.state.domain;
@@ -41,8 +50,8 @@
         }
         render() {
           return <div>
-            <div>Your domain: <input type="text" id="domain-input" onChange={this.updateLink} value={this.state.domain} /></div>
-            <div>Your file path: <input type="text" id="file-path" onChange={this.updateLink} value={this.state.file_path} /></div>
+            <div>Your domain: <input type="text" id="domain-input" onChange={this.updateDomain} value={this.state.domain} /></div>
+            <div>Your file path: <input type="text" id="file-path" onChange={this.updateFilePath} value={this.state.file_path} /></div>
             <div>Your fixed url: <input type="text" value={this.state.link} /></div>
           </div>
         }
