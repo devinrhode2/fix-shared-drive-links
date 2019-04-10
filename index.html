@@ -6,76 +6,130 @@
     <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone@7.4.3/babel.js"></script>
-    <style>
-      input {
-        width: 100%;
-      }
-      div > input {
-        margin-bottom: 16px;
-      }
-      * {
-        font-size: 24px;
-        font-family: sans-serif;
-      }
-    </style>
   </head>
   <body>
     <div id="root"></div>
+    <style>
+textarea,
+input {
+  width: 95%;
+  font-family: monospace;
+  border: 1px solid #444;
+}
+.parent > div > * {
+  display: inline-block;
+  margin-bottom: 40px;
+}
+* {
+  font-size: 24px;
+  font-family: sans-serif;
+}
+    </style>
     <script type="text/babel">
-      class Main extends React.Component {
-        constructor(props) {
-          super(props);
-          this.state = {
-            domain: localStorage.getItem('domain') || 'your.domain.com/folder',
-            file_path: 'foo\\bar bar\\baz\\Cool.docx'
-          };
+//import React from "react";
+//import ReactDOM from "react-dom";
 
-          this.updateLink = this.updateLink.bind(this);
-          this.updateInput = this.updateInput.bind(this);
-        }
-        updateInput(e) {
-          var newState = this.state;
-          newState[e.target.name] = e.target.value;
-          this.setState(newState);
+//import "./styles.css";
 
-          this.updateLink();
-        }
-        updateLink() {
-          let link = this.state.domain;
-          if (this.state.domain.includes('://')) {
-            alert('your domain has an issue, remove "://" and everything before it.');
-          }
-          link = 'smb://' + this.state.domain;
-          var needsJoiningSlash = true;
-          if (!link.endsWith('/')) {
-            link += '/';
-          }
+class Main extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      domain: localStorage.getItem("domain") || "your.domain.com/folder",
+      file_path: "foo\\bar bar\\baz\\Cool.docx"
+    };
 
-          let file_path = this.state.file_path.replace(/ /g, '%20').replace(/\\/g, '/');
-          file_path = file_path.replace('S:', '');
-          if (file_path.startsWith('/')) {
-            file_path = file_path.substring(1, file_path.length);
-          }
+    this.updateLink = this.updateLink.bind(this);
+    this.updateInput = this.updateInput.bind(this);
+  }
+  updateInput(e) {
+    var newState = this.state;
+    newState[e.target.name] = e.target.value;
+    this.setState(newState);
 
-          this.setState({link: link + file_path});
-          
-          localStorage.setItem('domain', this.state.domain);
-        }
-        componentDidMount() {
-          this.updateLink();
-        }
-        render() {
-          return <div>
-            <div>Your domain/folder path: <input type="text" id="domain-input" name="domain" onChange={this.updateInput} defaultValue={this.state.domain} /></div>
-            <div>Your file path: <input type="text" id="file-path" name="file_path" onChange={this.updateInput} defaultValue={this.state.file_path} /></div>
-            <div>Your shareable url: <input type="text" value={this.state.link} /></div>
-          </div>
-        }
-      };
-      ReactDOM.render(
-        <Main />,
-        document.getElementById('root')
-      );
+    this.updateLink();
+  }
+  updateLink() {
+    let link = this.state.domain;
+    localStorage.setItem("domain", this.state.domain);
+    if (this.state.domain.includes("://")) {
+      alert('your domain has an issue, remove "://" and everything before it.');
+    }
+    link = "smb://" + this.state.domain;
+    if (!link.endsWith("/")) {
+      link += "/";
+    }
+
+    // we've now made sure domain (as link) ends with a slash.
+
+    let file_path = this.state.file_path.trim().replace(/\\/g, "/");
+    if (file_path.startsWith("S:")) {
+      file_path = file_path.replace("S:", "");
+    }
+    if (file_path.startsWith("/")) {
+      file_path = file_path.substring(1, file_path.length);
+    }
+    link = link + file_path.replace(/ /g, "%20");
+
+    let parts = file_path.split('/');
+    let L = parts.length;
+    let markdown_link_text = parts[L-3] + '\\' + parts[L-2] + '\\' + parts[L-1];
+
+    this.state.file_path;
+
+    this.setState({
+      link: link,
+      markdown_link_text: markdown_link_text,
+      markdown_link: '['+markdownLinkText+']('+link+')'
+    });
+  }
+  componentDidMount() {
+    this.updateLink();
+  }
+  render() {
+    return (
+      <div className="parent">
+        <div>
+          Your domain/folder path:
+          <input
+            type="text"
+            id="domain-input"
+            name="domain"
+            onChange={this.updateInput}
+            defaultValue={this.state.domain}
+          />
+        </div>
+        <div>
+          Your file path:
+          <textarea
+            id="file-path"
+            name="file_path"
+            onChange={this.updateInput}
+            defaultValue={this.state.file_path}
+          />
+        </div>
+        <div>
+          Copy your shareable url (good anywhere and everywhere)
+          <textarea value={this.state.link} style={{ marginTop: "0px" }} />
+          <a href={this.state.link} target="_blank">
+            Click here to test opening link in new tab!
+          </a>
+        </div>
+
+        <div>
+          Markdown link text: <input type="text" name="" defaultValue={this.state} />
+          Markdown link (good for gitlab):
+          <textarea value={this.state.markdown_link} name="markdown_link" onChange={this.updateInput} />
+          Preview:
+          <a href={this.state.link}>{this.state.markdown_link_text}</a>
+        </div>
+
+      </div>
+    );
+  }
+}
+ReactDOM.render(<Main />, document.getElementById("root"));
+
     </script>
   </body>
 </html
