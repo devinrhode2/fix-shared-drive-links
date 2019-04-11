@@ -15,27 +15,44 @@ input {
   width: 95%;
   font-family: monospace;
   border: 1px solid #444;
+  color: black;
+}
+*:disabled {
+  background-color: hsla(120, 0%, 85%, 0.9);
 }
 .parent > div > * {
   display: inline-block;
-  margin-bottom: 40px;
+  margin-bottom: 36px;
 }
 * {
-  font-size: 24px;
+  font-size: 20px;
   font-family: sans-serif;
+}
+body {
+  background-color: hsl(226, 90%, 79%);
+  foo: hsl(229, 89%, 72%);
+  padding: 30px;
+}
+
+h1 {
+  font-size: 32px;
+  font-style: italic;
+  text-decoration: underline;
 }
     </style>
     <script type="text/babel">
+
 class Main extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      domain: localStorage.getItem("domain") || "your.domain.com/folder",
-      file_path: "foo\\bar bar\\baz\\Cool.docx"
+      domain: localStorage.getItem("domain") || "corp.biworldwide.com/shared",
+      file_path: ""
     };
 
     this.updateLink = this.updateLink.bind(this);
     this.updateInput = this.updateInput.bind(this);
+    this.setMarkdownLinkText = this.setMarkdownLinkText.bind(this);
   }
   updateInput(e) {
     var newState = this.state;
@@ -43,6 +60,11 @@ class Main extends React.Component {
     this.setState(newState);
 
     this.updateLink();
+  }
+  setMarkdownLinkText(e) {
+    var newState = this.state;
+    newState.users_markdown_link_text = e.target.value;
+    this.setState(newState);
   }
   updateLink() {
     let link = this.state.domain;
@@ -66,24 +88,29 @@ class Main extends React.Component {
     }
     link = link + file_path.replace(/ /g, "%20");
 
-    let parts = file_path.split("/");
-    let L = parts.length;
-    let markdown_link_text =
-      this.state.users_markdown_link_text ||
-      parts[L - 3] + "\\" + parts[L - 2] + "\\" + parts[L - 1];
+    let markdown_link_text = this.state.file_path
+      ? this.state.file_path
+      : "undefined";
+    // if (file_path && file_path.length > 0) {
+    //   let parts = file_path.split("/");
+    //   let L = parts.length;
 
-    this.state.file_path;
+    //   if (parts[L - 1] && parts[L - 1].length > 0) {
+    //     parts.pop();
+    //     L = parts.length;
+    //   }
+    //   markdown_link_text =
+    //     (parts[L - 3] ? parts[L - 3] + "\\" : "") +
+    //     (parts[L - 2] ? parts[L - 2] + "\\" : "") +
+    //     (parts[L - 1] ? parts[L - 1] : "");
+    // }
+    // markdown_link_text = 'S:\\'
 
     this.setState({
       link: link,
-      markdown_link_text: markdown_link_text,
-      markdown_link: "[" + markdownLinkText + "](" + link + ")"
+      file_path: file_path,
+      markdown_link_text: markdown_link_text
     });
-  }
-  setMarkdownLinkText(e) {
-    var newState = this.state;
-    newState[e.target.name] = e.target.value;
-    this.setState(newState);
   }
   componentDidMount() {
     this.updateLink();
@@ -91,6 +118,22 @@ class Main extends React.Component {
   render() {
     return (
       <div className="parent">
+        <h1>
+          Create real clickable links to shared drive
+          <span
+            style={{
+              textDecoration: "none !important",
+              display: "inline-block",
+              fontSize: "17px",
+              position: "relative",
+              left: "1px",
+              top: "7px"
+            }}
+          >
+            &nbsp;v2.1
+          </span>
+          {/*there was no version 1 or 2.0, just having fun*/}
+        </h1>
         <div>
           Your domain/folder path:
           <input
@@ -106,42 +149,69 @@ class Main extends React.Component {
           <textarea
             id="file-path"
             name="file_path"
+            placeholder="S:\nds\foo bar.doc"
             onChange={this.updateInput}
             defaultValue={this.state.file_path}
           />
         </div>
         <div>
-          Copy your shareable url (good anywhere and everywhere)
-          <textarea value={this.state.link} style={{ marginTop: "0px" }} />
-          <a href={this.state.link} target="_blank">
-            Click here to test opening link in new tab!
-          </a>
+          Your shareable url (good anywhere and everywhere)
+          <textarea
+            value={this.state.link}
+            style={{ marginBottom: "3px" }}
+            readonly
+            disabled
+          />
+          {this.state.file_path ? (
+            <div>
+              <a href={this.state.link} target="_blank">
+                CLICK HERE TO TEST LINK
+              </a>{" "}
+              (opens in new tab)
+            </div>
+          ) : (
+            ""
+          )}
         </div>
 
-        <div>
-          Markdown link text:
+        <div style={{ marginTop: "8px" }}>
+          {/* Markdown link text:
           <input
             type="text"
             name="markdown_link_text"
+            value={this.state.markdown_link_text}
             onChange={this.updateInput}
-            defaultValue={this.state.markdown_link_text}
-          />
-          Markdown link (good for gitlab):
+            defaultValue={this.state.default_markdown_link_text}
+            style={{ marginBottom: "16px" }}
+          /> */}
+          Markdown link (good for gitlab): text: {this.state.markdown_link_text}
           <textarea
-            value={this.state.markdown_link}
+            value={
+              "[" + this.state.markdown_link_text + "](" + this.state.link + ")"
+            }
             name="markdown_link"
+            style={{ marginBottom: "4px" }}
             readonly
+            disabled
           />
-          Preview/test:
-          <a href={this.state.link}>{this.state.markdown_link_text}</a>
+          Preview/test:&nbsp;
+          <a
+            href={this.state.link}
+            style={{
+              textDecoration: "none",
+              display: "inline-block",
+              borderBottom: "1px solid blue",
+              paddingBottom: "0px"
+            }}
+          >
+            {this.state.markdown_link_text}
+          </a>
         </div>
       </div>
     );
   }
 }
 ReactDOM.render(<Main />, document.getElementById("root"));
-
-
     </script>
   </body>
 </html
