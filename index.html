@@ -26,11 +26,6 @@ input {
 }
     </style>
     <script type="text/babel">
-//import React from "react";
-//import ReactDOM from "react-dom";
-
-//import "./styles.css";
-
 class Main extends React.Component {
   constructor(props) {
     super(props);
@@ -71,17 +66,24 @@ class Main extends React.Component {
     }
     link = link + file_path.replace(/ /g, "%20");
 
-    let parts = file_path.split('/');
+    let parts = file_path.split("/");
     let L = parts.length;
-    let markdown_link_text = parts[L-3] + '\\' + parts[L-2] + '\\' + parts[L-1];
+    let markdown_link_text =
+      this.state.users_markdown_link_text ||
+      parts[L - 3] + "\\" + parts[L - 2] + "\\" + parts[L - 1];
 
     this.state.file_path;
 
     this.setState({
       link: link,
       markdown_link_text: markdown_link_text,
-      markdown_link: '['+markdownLinkText+']('+link+')'
+      markdown_link: "[" + markdownLinkText + "](" + link + ")"
     });
+  }
+  setMarkdownLinkText(e) {
+    var newState = this.state;
+    newState[e.target.name] = e.target.value;
+    this.setState(newState);
   }
   componentDidMount() {
     this.updateLink();
@@ -117,18 +119,28 @@ class Main extends React.Component {
         </div>
 
         <div>
-          Markdown link text: <input type="text" name="" defaultValue={this.state} />
+          Markdown link text:
+          <input
+            type="text"
+            name="markdown_link_text"
+            onChange={this.updateInput}
+            defaultValue={this.state.markdown_link_text}
+          />
           Markdown link (good for gitlab):
-          <textarea value={this.state.markdown_link} name="markdown_link" onChange={this.updateInput} />
-          Preview:
+          <textarea
+            value={this.state.markdown_link}
+            name="markdown_link"
+            readonly
+          />
+          Preview/test:
           <a href={this.state.link}>{this.state.markdown_link_text}</a>
         </div>
-
       </div>
     );
   }
 }
 ReactDOM.render(<Main />, document.getElementById("root"));
+
 
     </script>
   </body>
